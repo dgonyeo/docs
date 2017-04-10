@@ -33,21 +33,15 @@ Container Linux allows you to configure machine parameters, launch systemd units
 
 Our cluster will use an etcd [discovery URL](cluster-discovery.md) to bootstrap the cluster of machines and elect an initial etcd leader. Be sure to replace `<token>` with your own URL from [https://discovery.etcd.io/new](https://discovery.etcd.io/new):
 
-```cloud-config
+```yaml
 #cloud-config
 
 coreos:
   etcd2:
-    # generate a new token for each unique cluster from https://discovery.etcd.io/new?size=3
-    # specify the initial size of your cluster with ?size=X
-    # WARNING: replace each time you 'vagrant destroy'
     discovery: https://discovery.etcd.io/<token>
-    # multi-region and multi-cloud deployments need to use $public_ipv4
-    advertise-client-urls: http://$private_ipv4:2379,http://$private_ipv4:4001
+    advertise-client-urls: http://$private_ipv4:2379
     initial-advertise-peer-urls: http://$private_ipv4:2380
-    # listen on both the official ports and the legacy ports
-    # legacy ports can be omitted if your application doesn't depend on them
-    listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
+    listen-client-urls: http://0.0.0.0:2379
     listen-peer-urls: http://$private_ipv4:2380
   fleet:
     public-ip: $public_ipv4
